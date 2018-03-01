@@ -15,5 +15,5 @@ jobs:
           command: docker build -t sample-app:${CIRCLE_SHA1} .
       - run:
           name: Running tests
-          command: docker run sample-app python setup.py test
+          command: docker run sample-app:${CIRCLE_SHA1} python setup.py test
 
