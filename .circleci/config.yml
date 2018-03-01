@@ -9,5 +9,10 @@ jobs:
       - image: circleci/python:3.6.1
     steps:
       - checkout
-      - run: python setup.py test
+      - run:
+        name: Run tests
+        command: python setup.py test
+      - run:
+        name: Building Image
+        command: docker build -t sample-app .
 
