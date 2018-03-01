@@ -1,0 +1,25 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Building docker image
+          command: docker build -t grantbachman/sample-app:${CIRCLE_SHA1} .
+      - run:
+          name: Running tests
+          command: docker run grantbachman/sample-app:${CIRCLE_SHA1} python setup.py test
+      - run:
+          name: Pushing docker image
+          command: |
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
+            docker push grantbachman/sample-app:${CIRCLE_SHA1}
+
+
