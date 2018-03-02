@@ -13,9 +13,9 @@ jobs:
       - run:
           name: Installing dependencies
           command: |
-            apk add --no-cache curl
-            curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-            chmod +x ./kubectl
+            apk add --no-cache curl &&
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl &&
+            chmod +x ./kubectl &&
             echo ${KUBECONFIG_ENCODED} | base64 -d > .kubeconfig
       - run:
           name: Building docker image
