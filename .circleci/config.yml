@@ -13,9 +13,10 @@ jobs:
       - run:
           name: Installing dependencies
           command: |
+            apk add --update -t deps curl
+            apk add bash
             mkdir ~/.kube
             echo ${KUBECONFIG_ENCODED} | base64 -d > ~/.kube/config
-            apk add --no-cache curl
             curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh
             chmod 700 get_helm.sh
             ./get_helm.sh
