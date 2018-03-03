@@ -33,5 +33,11 @@ jobs:
           command: |
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
             docker push grantbachman/sample-app:${CIRCLE_SHA1}
+      - run:
+          name: Deploying application to Kubernetes
+          command: |
+            helm upgrade sample-app kubernetes/sample-app --reuse-values --set image.tag=${CIRCLE_SHA1}
+
+
 
 
