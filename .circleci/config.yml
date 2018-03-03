@@ -6,10 +6,22 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:17.12.0-ce-git
     steps:
       - checkout
       - setup_remote_docker
+      - run:
+          name: Installing dependencies
+          command: |
+            apk add --update -t deps curl
+            apk add bash
+            mkdir ~/.kube
+            echo ${KUBECONFIG_ENCODED} | base64 -d > ~/.kube/config
+            curl -L https://storage.googleapis.com/kubernetes-release/release/v1.9.2/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
+            chmod +x /usr/local/bin/kubectl
+            curl -L http://storage.googleapis.com/kubernetes-helm/helm-v2.8.1-linux-amd64.tar.gz -o /tmp/helm-package
+            tar -zxvf /tmp/helm-package -C /tmp
+            mv /tmp/linux-amd64/helm /bin/helm
       - run:
           name: Building docker image
           command: docker build -t grantbachman/sample-app:${CIRCLE_SHA1} .
@@ -21,5 +33,11 @@ jobs:
           command: |
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
             docker push grantbachman/sample-app:${CIRCLE_SHA1}
+      - run:
+          name: Deploying application to Kubernetes
+          command: |
+            helm upgrade sample-app kubernetes/sample-app --reuse-values --set image.tag=${CIRCLE_SHA1}
+
+
 
 
