@@ -17,9 +17,9 @@ jobs:
             apk add bash
             mkdir ~/.kube
             echo ${KUBECONFIG_ENCODED} | base64 -d > ~/.kube/config
-            curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh
-            chmod 700 get_helm.sh
-            ./get_helm.sh
+            curl -L http://storage.googleapis.com/kubernetes-helm/helm-v2.8.1-linux-amd64.tar.gz -o /tmp/helm-package
+            tar -zxvf /tmp/helm-package -C /tmp
+            mv /tmp/linux-amd64/helm /bin/helm
       - run:
           name: Building docker image
           command: docker build -t grantbachman/sample-app:${CIRCLE_SHA1} .
